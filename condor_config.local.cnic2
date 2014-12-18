@@ -1,0 +1,62 @@
+use ROLE: Submit, Execute
+
+#CONDOR_HOST = 115.25.138.244
+CONDOR_HOST = 115.25.138.245
+
+#CONDOR_ADMIN = adesmet@cs.wisc.edu
+CONDOR_ADMIN = zuowzhang@buaa.edu.cn
+
+MAX_DEFAULT_LOG = 50 Mb
+
+################################################################################
+# Enable security
+use SECURITY: Strong
+
+SEC_DEFAULT_AUTHENTICATION_METHODS = FS, PASSWORD, SSL
+SEC_READ_AUTHENTICATION_METHODS = $(SEC_DEFAULT_AUTHENTICATION_METHODS), ANONYMOUS
+SEC_CLIENT_AUTHENTICATION_METHODS = $(SEC_DEFAULT_AUTHENTICATION_METHODS), ANONYMOUS
+
+
+SEC_PASSWORD_FILE = /etc/condor/datamovementpoolpassword
+
+#STARTD_BEIHANG = 115.25.138.244
+STARTD_BEIHANG2 = 115.25.138.245
+STARTD_CNIC2 = 159.226.224.180
+#STARTD_UCSD = *.ucsd.edu *.optiputer.net
+#STARTD_CHTC = *.chtc.wisc.edu
+
+#ALLOW_ADMINISTRATOR = komatsu.chtc.wisc.edu
+ALLOW_ADMINISTRATOR = 115.25.138.245
+#ALLOW_ADVERTISE_STARTD =  $(STARTD_BEIHANG) $(STARTD_UCSD) $(STARTD_CHTC)
+ALLOW_ADVERTISE_STARTD = $(STARTD_BEIHANG2) $(STARTD_CNIC2)
+ALLOW_DAEMON = $(ALLOW_ADVERTISE_STARTD) 
+ALLOW_WRITE = $(ALLOW_ADVERTISE_STARTD) 
+ALLOW_ADVERTISE_MASTER = $(ALLOW_ADVERTISE_STARTD) $(ALLOW_WRITE)
+ALLOW_NEGOTIATOR = $(CONDOR_HOST)
+ALLOW_READ = *
+
+################################################################################
+# Enable partitionable slots
+NUM_SLOTS=1
+NUM_SLOTS_TYPE_1=1
+SLOT_TYPE_1_PARTITIONABLE=true
+SLOT_TYPE_1 = cpus=100%,disk=100%,swap=100%,gpus=100%
+ASSIGN_CPU_AFFINITY=true
+
+################################################################################
+# Enable dedicated scheduler, allows parallel universe
+#DedicatedScheduler = "DedicatedScheduler@komatsu.chtc.wisc.edu"
+DedicatedScheduler = "zuowzhang@buaa.edu.cn"
+STARTD_EXPRS = $(STARTD_EXPRS) DedicatedScheduler 
+
+###############################################################################
+#  Enable to run as user
+STARTER_ALLOW_RUNAS_OWNER = True
+
+DAEMON_LIST =  MASTER, SCHEDD, STARTD
+#DAEMON_LIST = COLLECTOR, MASTER, NEGOTIATOR, SCHEDD, STARTD
+
+###############################################################################
+HIGHPORT = 10100
+LOWPORT = 9600
+
