@@ -1,0 +1,93 @@
+use ROLE: Submit, Execute
+
+#SHADOW_DEBUG  = D_FULLDEBUG
+#STARTER_DEBUG = D_FULLDEBUG
+
+#CONDOR_HOST = komatsu.chtc.wisc.edu
+CONDOR_HOST = 115.25.138.245
+
+#CONDOR_ADMIN = ppapadopoulos@ucsd.edu
+CONDOR_ADMIN = zwzhang@buaa.edu.cn
+
+MAX_DEFAULT_LOG = 50 Mb
+
+################################################################################
+# Enable security
+use SECURITY: Strong
+
+# By default, must authenticate via filesystem or pool password
+SEC_DEFAULT_AUTHENTICATION_METHODS = FS, PASSWORD
+# Allow READ level access (e.g. condor_status) with ANONYMOUS authentication
+SEC_READ_AUTHENTICATION_METHODS = $(SEC_DEFAULT_AUTHENTICATION_METHODS), ANONYMOUS
+# Have tools like condor_status attempt ANONYMOUS authentication.  so that 
+# condor_status will work from any machine in the pool.
+SEC_CLIENT_AUTHENTICATION_METHODS = $(SEC_DEFAULT_AUTHENTICATION_METHODS), ANONYMOUS
+
+SEC_PASSWORD_FILE = /etc/condor/datamovementpoolpassword
+
+#STARTD_BEIHANG = 115.25.138.244 
+#STARTD_CNIC = 159.226.15.235
+#STARTD_UCSD = *.ucsd.edu *.optiputer.net *.rocksclusters.org
+#STARTD_CHTC = *.chtc.wisc.edu
+STARTD_BEIHANG2 = 115.25.138.245
+STARTD_CNIC2 = 159.226.224.180
+
+#ALLOW_ADMINISTRATOR = komatsu.chtc.wisc.edu
+ALLOW_ADMINISTRATOR = 115.25.138.245
+#ALLOW_ADVERTISE_STARTD =  $(STARTD_BEIHANG) $(STARTD_CNIC) $(STARTD_UCSD) $(STARTD_CHTC)
+ALLOW_ADVERTISE_STARTD =  $(STARTD_BEIHANG2) $(STARTD_CNIC2)
+ALLOW_DAEMON = $(ALLOW_ADVERTISE_STARTD) 
+ALLOW_WRITE = $(ALLOW_ADVERTISE_STARTD) 
+ALLOW_ADVERTISE_MASTER = $(ALLOW_ADVERTISE_STARTD) $(ALLOW_WRITE)
+ALLOW_NEGOTIATOR = $(CONDOR_HOST)
+ALLOW_READ = *
+
+################################################################################
+# Tell HTCondor to avoid UDP in favor of TCP whenever possible, since UDP
+# datagrams seem unreliable over the WAN
+SCHEDD_SEND_VACATE_VIA_TCP = True
+
+
+################################################################################
+# Enable dedicated scheduler, allows parallel universe.
+# Now, tell the startd slots the name of the dedicated scheduler they are bound
+# to. Each static slot prefers a different dedicated scheduler.
+#SLOT1_DedicatedScheduler = "DedicatedScheduler@komatsu.chtc.wisc.edu`"
+#SLOT2_DedicatedScheduler = "DedicatedScheduler@cnicidpl"
+#SLOT3_DedicatedScheduler = "DedicatedScheduler@jsi-inspur02"
+#SLOT4_DedicatedScheduler = "DedicatedScheduler@murpa.rocksclusters.org"
+SLOT1_DedicatedScheduler = "DedicatedScheduler@dell01.jsi.buaa.edu.cn"
+SLOT2_DedicatedScheduler = "DedicatedScheduler@cnicidpl2"
+SLOT5_DedicatedScheduler = UNDEFINED
+
+################################################################################
+# Configure the startd to have five static slots.  Each static slot will be bound
+# to a different schedd for purposes of running parallel universe jobs.
+# Slot1 will be intended for vanilla universe jobs, since it does not have
+# a dedicated scheduler defined.
+#NUM_CPUS=5
+NUM_CPUS=3
+#NUM_SLOTS=5
+NUM_SLOTS=3
+# IsOwner=False will have slots show up as Unclaimed instead of Owner state
+IsOwner = False
+# START is a classad expression that must evaluate to true for a slot to 
+# accept a job.  Job ads that are parallel universe will have a Scheduler
+# attribute, while vanilla jobs will have Scheduler==UNDEFINED.
+START = Scheduler =?= DedicatedScheduler
+# Enforce the job cannot use more cores than assigned to this slot
+ASSIGN_CPU_AFFINITY=true
+# All machines should advertise their location in the machine ad
+Location = "CNIC"
+STARTD_EXPRS = $(STARTD_EXPRS) DedicatedScheduler Location IsOwner
+
+###############################################################################
+# Enable run as user
+STARTER_ALLOW_RUNAS_OWNER = True
+
+#DAEMON_LIST = COLLECTOR, MASTER, NEGOTIATOR, SCHEDD, STARTD
+
+###############################################################################
+
+HIGHPORT = 10100
+LOWPORT = 9600
