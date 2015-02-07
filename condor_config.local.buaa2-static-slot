@@ -4,7 +4,7 @@ use ROLE: Submit, Execute
 #STARTER_DEBUG = D_FULLDEBUG
 
 #CONDOR_HOST = komatsu.chtc.wisc.edu
-CONDOR_HOST = 115.25.138.245
+CONDOR_HOST = spring.buaa.edu.cn
 
 #CONDOR_ADMIN = ppapadopoulos@ucsd.edu
 CONDOR_ADMIN = zwzhang@buaa.edu.cn
@@ -25,22 +25,25 @@ SEC_CLIENT_AUTHENTICATION_METHODS = $(SEC_DEFAULT_AUTHENTICATION_METHODS), ANONY
 
 SEC_PASSWORD_FILE = /etc/condor/datamovementpoolpassword
 
+################################################################################
+
 #STARTD_BEIHANG = 115.25.138.244 
 #STARTD_CNIC = 159.226.15.235
 #STARTD_UCSD = *.ucsd.edu *.optiputer.net *.rocksclusters.org
 #STARTD_CHTC = *.chtc.wisc.edu
-STARTD_BEIHANG2 = 115.25.138.245
+STARTD_BEIHANG2 = spring.buaa.edu.cn
 STARTD_CNIC2 = 159.226.224.180
 
 #ALLOW_ADMINISTRATOR = komatsu.chtc.wisc.edu
-ALLOW_ADMINISTRATOR = 115.25.138.245
 #ALLOW_ADVERTISE_STARTD =  $(STARTD_BEIHANG) $(STARTD_CNIC) $(STARTD_UCSD) $(STARTD_CHTC)
+ALLOW_ADMINISTRATOR = spring.buaa.edu.cn
 ALLOW_ADVERTISE_STARTD =  $(STARTD_BEIHANG2) $(STARTD_CNIC2)
 ALLOW_DAEMON = $(ALLOW_ADVERTISE_STARTD) 
 ALLOW_WRITE = $(ALLOW_ADVERTISE_STARTD) 
 ALLOW_ADVERTISE_MASTER = $(ALLOW_ADVERTISE_STARTD) $(ALLOW_WRITE)
 ALLOW_NEGOTIATOR = $(CONDOR_HOST)
 ALLOW_READ = *
+
 
 ################################################################################
 # Tell HTCondor to avoid UDP in favor of TCP whenever possible, since UDP
@@ -56,7 +59,7 @@ SCHEDD_SEND_VACATE_VIA_TCP = True
 #SLOT2_DedicatedScheduler = "DedicatedScheduler@cnicidpl"
 #SLOT3_DedicatedScheduler = "DedicatedScheduler@jsi-inspur02"
 #SLOT4_DedicatedScheduler = "DedicatedScheduler@murpa.rocksclusters.org"
-SLOT1_DedicatedScheduler = "DedicatedScheduler@dell01.jsi.buaa.edu.cn"
+SLOT1_DedicatedScheduler = "DedicatedScheduler@spring.buaa.edu.cn"
 SLOT2_DedicatedScheduler = "DedicatedScheduler@cnicidpl2"
 SLOT5_DedicatedScheduler = UNDEFINED
 
